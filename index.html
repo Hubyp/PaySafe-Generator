@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+        <title>PaySafe Generator</title>
+        <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+        <div class="context">
+                <h1>PaySafe Generator</h1>
+                <br>
+                <button class="button" onclick="generatePassword()">Generate PaySafe</button>
+
+                <p>Code:</p>
+                <p id="password"></p>
+                <br>
+                <br>
+                <button onclick="select()" id="copyBtn">Copiază Codul</button>
+        </div>
+
+        <div class="area">
+                <ul class="circles">
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                </ul>
+        </div>
+        <script>
+                function generatePassword() {
+                        const length = 14;
+                        const characters = "0123456789";
+                        const specialCharacters = "";
+
+                        let name = "09";
+
+                        // Declare an empty array to store the generated names
+                        let generatedNames = [];
+
+                        while (true) {
+                                // Generate a new name
+                                for (let i = 0; i < length; i++) {
+                                        name += characters.charAt(Math.floor(Math.random() * characters.length));
+                                }
+
+                                // Check if the name already exists in the array
+                                if (!generatedNames.includes(name)) {
+                                        // Add the unique name to the array
+                                        generatedNames.push(name);
+                                        break;
+                                } else {
+                                        // Generate a new name until a unique one is found
+                                        name = "09";
+                                }
+                        }
+
+                        let includesSpecial = false;
+                        for (let i = 0; i < specialCharacters.length; i++) {
+                                if (name.includes(specialCharacters.charAt(i))) {
+                                        includesSpecial = false;
+                                        break;
+                                }
+                        }
+
+                        if (!includesSpecial) {
+                                name = name.substring(0, name.length - 1) + specialCharacters.charAt(Math.floor(Math.random() * specialCharacters.length));
+                        }
+
+                        document.getElementById("password").textContent = name;
+
+                        // Write the name to file.txt
+                        const fs = new FileSystem();
+                        fs.writeFile("gen.txt", name, function (err) {
+                                if (err) {
+                                        console.error(err);
+                                }
+                        });
+                }
+                document.getElementById("copyBtn").addEventListener("click", function () {
+                        var password = document.getElementById("password");
+
+                        var range = document.createRange();
+                        range.selectNodeContents(password);
+
+                        var selection = window.getSelection();
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+
+                        document.execCommand("copy");
+
+                        alert("Parola a fost copiată în clipboard.");
+                });
+
+
+        </script>
+</body>
+
+</html>
